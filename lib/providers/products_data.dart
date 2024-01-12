@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:t3_shoppinglist/models/product.dart';
 
-enum OrderBy {id, name, category, price}
+enum OrderBy { id, name, category, price }
 
 class ProductsData {
   final List<Product> _products;
@@ -12,8 +12,7 @@ class ProductsData {
   factory ProductsData.fromJson(String jsonData, {OrderBy orderBy = OrderBy.name}) {
     Map<String, dynamic> mapJson = json.decode(jsonData);
 
-
-    List <dynamic> list = mapJson["products"];
+    List<dynamic> list = mapJson["products"];
 
     List<Product> productsList = list.map((element) => Product.fromMap(element)).toList();
 
@@ -21,16 +20,21 @@ class ProductsData {
 
     return ProductsData._(productsList);
   }
+
   Product getProduct(int index) => _products[index];
   int getSize() => _products.length;
 
-  static Future<String> loadJson (BuildContext context, String file) async {
+  List<Product> getSelectedProducts() {
+    return _products.where((product) => product.isSelected).toList();
+  }
+
+  static Future<String> loadJson(BuildContext context, String file) async {
     await Future.delayed(Duration(seconds: 2));
     return await DefaultAssetBundle.of(context).loadString(file);
   }
 
   static _sortList(List<Product> list, OrderBy orderBy) {
-    switch(orderBy) {
+    switch (orderBy) {
       case OrderBy.id:
         list.sort((prodA, prodB) => prodA.id.compareTo(prodB.id));
         break;

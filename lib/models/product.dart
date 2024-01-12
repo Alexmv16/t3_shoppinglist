@@ -5,6 +5,7 @@ class Product {
   String category;
   String image;
   String description;
+  bool isSelected = false;
 
   Product(this.id, this.name, this.price, this.category, this.image, this.description);
 
