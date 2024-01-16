@@ -21,6 +21,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       appBar: AppBar(
         title: const Text('List of Products'),
         actions: [
+          //TODO Act1: Aqui creamos el icono del carrito que si clickamos en el nos redigira a la pagina del carrito
           IconButton(
             icon: Icon(Icons.shopping_cart),
             onPressed: () {
@@ -58,7 +59,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       _currentOrderBy = _orderByField(field);
     });
   }
-
+  //TODO Act2: aqui ordenamos los items del banner horizontal
   OrderBy _orderByField(String field) {
     switch (field) {
       case 'id':

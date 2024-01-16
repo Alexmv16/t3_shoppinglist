@@ -13,6 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  //TODO Act3: Variable para de usuario y contraseña para acceder a la app
   static const String correctUser = "user@ejemplo.com";
   static const String correctPassword = "Password123!";
 
@@ -31,13 +32,14 @@ class _LoginScreenState extends State<LoginScreen> {
         validator: (value) {
           if (value == null || value.isEmpty || !value.contains('@')) {
             return 'Invalid email address';
+            //TODO Act3: si el valor no corresponde a lo que pedimos en la actividad, dara un error de invalid email hasta que esten los datos correctamente
           }
           return null;
         },
       ),
     );
   }
-
+//TODO Act3: metodo para comprobar si la contraseña cumple con los requisitos pedidos
   Widget _passwordInput() {
     return Container(
       margin: EdgeInsets.only(bottom: 16.0),

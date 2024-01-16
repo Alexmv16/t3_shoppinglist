@@ -10,6 +10,7 @@ class ShoppingCartScreen extends StatefulWidget {
   _ShoppingCartScreenState createState() => _ShoppingCartScreenState();
 }
 
+//TODO Act1: En esta clase se mostraran los productos que hemos añadido a nuestro carrito
 class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   double totalAmount = 0.0;
 
@@ -106,6 +107,7 @@ class _CartItemWidgetState extends State<_CartItemWidget> {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          //TODO Act1: Aqui creamos los botones para aumentar o disminuir la cantidad escogida en nuestra cesta
           _QuantityButton(
             icon: Icons.remove,
             color: Colors.red,
