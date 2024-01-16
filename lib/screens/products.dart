@@ -161,7 +161,6 @@ class _ShoppingBagIcon extends StatefulWidget {
   @override
   _ShoppingBagIconState createState() => _ShoppingBagIconState();
 }
-
 class _ShoppingBagIconState extends State<_ShoppingBagIcon> {
   @override
   Widget build(BuildContext context) {
