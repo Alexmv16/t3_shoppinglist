@@ -1,16 +1,8 @@
 # t3_shoppinglist
 
-A new Flutter project.
+Proyecto Alex Moreno
 
-## Getting Started
+## Funcion de la aplicacion 
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Este proyecto es una aplicacion de una lista de productos basicamente para poder hacer la compra y tambien ver la informacion de los productos que queremos, aqui debajo voy a dejar el enlace al video en el que explico un poco el codigo y las funciones creadas dentro de la app
+https://drive.google.com/file/d/1EZxDWwmnQlCmzl7Wrnu9XAs6rcEWWhAe/view?usp=drive_link
