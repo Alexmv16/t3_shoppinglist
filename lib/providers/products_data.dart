@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:t3_shoppinglist/models/product.dart';
 
-enum OrderBy { id, name, category, price }
+enum OrderBy { id, name, category, price, iva }
 
 class ProductsData {
   final List<Product> _products;
@@ -33,7 +33,7 @@ class ProductsData {
     return await DefaultAssetBundle.of(context).loadString(file);
   }
 
-  static _sortList(List<Product> list, OrderBy orderBy) {
+  static void _sortList(List<Product> list, OrderBy orderBy) {
     switch (orderBy) {
       case OrderBy.id:
         list.sort((prodA, prodB) => prodA.id.compareTo(prodB.id));
@@ -46,6 +46,9 @@ class ProductsData {
         break;
       case OrderBy.price:
         list.sort((prodA, prodB) => prodA.price.compareTo(prodB.price));
+        break;
+      case OrderBy.iva:
+        list.sort((prodA, prodB) => prodA.iva.compareTo(prodB.iva));
         break;
     }
   }

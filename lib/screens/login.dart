@@ -10,43 +10,27 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  Widget _eMailInput(){
-    return  Container(
-      margin: EdgeInsets.only(bottom :16.0),
-      child: TextFormField(
-        decoration: InputDecoration(
-        labelText: 'User',
-        hintText: 'Write your email address',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),),
-        ),
-          validator: (value){
-          if (value == null || value.isEmpty) {
-            return 'Sorry, user cant be empty.';
-          }
-          return null;
-          },
-       ),
-    );
-  }
+  static const String correctUser = "user@ejemplo.com";
+  static const String correctPassword = "Password123!";
 
-  Widget _passwordInput() {
+  Widget _eMailInput() {
     return Container(
       margin: EdgeInsets.only(bottom: 16.0),
       child: TextFormField(
-        obscureText: true,
-        obscuringCharacter: '*',
+        controller: _emailController,
         decoration: InputDecoration(
-          hintText: 'Write your password',
-          labelText: 'Password',
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),),
+          labelText: 'User',
+          hintText: 'Write your email address',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
         ),
-        validator: (value){
-          if (value == null || value.isEmpty) {
-            return 'Sorry, password cant be empty.';
-          }
-          if (value.length < 5) {
-            return  'Sorry, password lenght must be 5 characters or greater';
+        validator: (value) {
+          if (value == null || value.isEmpty || !value.contains('@')) {
+            return 'Invalid email address';
           }
           return null;
         },
@@ -54,7 +38,37 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _loginButton(){
+  Widget _passwordInput() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 16.0),
+      child: TextFormField(
+        controller: _passwordController,
+        obscureText: true,
+        obscuringCharacter: '*',
+        decoration: InputDecoration(
+          hintText: 'Write your password',
+          labelText: 'Password',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Password cannot be empty';
+          }
+          if (value.length < 8 ||
+              !value.contains(RegExp(r'[A-Z]')) ||
+              !value.contains(RegExp(r'[0-9]')) ||
+              !value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+            return 'Invalid password format';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _loginButton() {
     return Container(
       padding: EdgeInsets.all(8.0),
       alignment: Alignment.centerRight,
@@ -62,31 +76,50 @@ class _LoginScreenState extends State<LoginScreen> {
         child: const Text('Login'),
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Trying to login ...')),
-            );
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ProductsScreen()));
+            final email = _emailController.text;
+            final password = _passwordController.text;
+
+            if (email == correctUser && password == correctPassword) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Welcome! Logging in...')),
+              );
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => ProductsScreen()),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Invalid credentials. Please try again.')),
+              );
+            }
           }
-        }
+        },
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _eMailInput(),
-            _passwordInput(),
-            _loginButton(),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _eMailInput(),
+              SizedBox(height: 16.0),
+              _passwordInput(),
+              SizedBox(height: 16.0),
+              _loginButton(),
+            ],
+          ),
         ),
-      )
+      ),
     );
   }
 }

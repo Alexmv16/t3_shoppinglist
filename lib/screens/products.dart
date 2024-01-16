@@ -4,8 +4,16 @@ import 'package:t3_shoppinglist/providers/products_data.dart';
 import 'package:t3_shoppinglist/screens/product_detail.dart';
 import 'package:t3_shoppinglist/screens/shopping_cart.dart';
 
-class ProductsScreen extends StatelessWidget {
+class ProductsScreen extends StatefulWidget {
   const ProductsScreen({Key? key}) : super(key: key);
+
+  @override
+  _ProductsScreenState createState() => _ProductsScreenState();
+}
+
+class _ProductsScreenState extends State<ProductsScreen> {
+  List<Product> selectedProducts = [];
+  OrderBy _currentOrderBy = OrderBy.name;
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +24,11 @@ class ProductsScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.shopping_cart),
             onPressed: () {
-              List<Product> selectedProducts = _getSelectedProducts();
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ShoppingCartScreen(selectedProducts: selectedProducts)),
+                MaterialPageRoute(
+                  builder: (context) => ShoppingCartScreen(selectedProducts: selectedProducts),
+                ),
               );
             },
           ),
@@ -29,7 +38,13 @@ class ProductsScreen extends StatelessWidget {
         future: ProductsData.loadJson(context, 'assets/json/products.json'),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.hasData) {
-            return _ProductsListView(ProductsData.fromJson(snapshot.data!));
+            return _ProductsListView(
+              ProductsData.fromJson(snapshot.data!, orderBy: _currentOrderBy),
+              selectedProducts,
+              onSort: (field) {
+                _sortProducts(field);
+              },
+            );
           } else {
             return const Center(child: CircularProgressIndicator());
           }
@@ -38,23 +53,75 @@ class ProductsScreen extends StatelessWidget {
     );
   }
 
-  List<Product> _getSelectedProducts() {
-    List<Product> selectedProducts = [];
-    return selectedProducts;
+  void _sortProducts(String field) {
+    setState(() {
+      _currentOrderBy = _orderByField(field);
+    });
+  }
+
+  OrderBy _orderByField(String field) {
+    switch (field) {
+      case 'id':
+        return OrderBy.id;
+      case 'name':
+        return OrderBy.name;
+      case 'category':
+        return OrderBy.category;
+      case 'price':
+        return OrderBy.price;
+      case 'iva':
+        return OrderBy.iva;
+      default:
+        return OrderBy.name;
+    }
   }
 }
 
 class _ProductsListView extends StatelessWidget {
   final ProductsData _productsData;
+  final List<Product> selectedProducts;
+  final Function(String) onSort;
 
-  _ProductsListView(this._productsData);
+  _ProductsListView(this._productsData, this.selectedProducts, {required this.onSort});
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: _productsData.getSize(),
-      itemBuilder: (context, index) =>
-          _listItem(context, _productsData.getProduct(index)),
+    return Column(
+      children: [
+        _buildSortingBar(),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _productsData.getSize(),
+            itemBuilder: (context, index) =>
+                _listItem(context, _productsData.getProduct(index)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSortingBar() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _buildSortButton("ID", () => onSort('id')),
+          _buildSortButton("Name", () => onSort('name')),
+          _buildSortButton("Category", () => onSort('category')),
+          _buildSortButton("Price", () => onSort('price')),
+          _buildSortButton("IVA", () => onSort('iva')),
+          // Add buttons for other fields as needed
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSortButton(String fieldName, Function onPressed) {
+    return ElevatedButton(
+      onPressed: () {
+        onPressed();
+      },
+      child: Text(fieldName),
     );
   }
 
@@ -65,8 +132,7 @@ class _ProductsListView extends StatelessWidget {
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                ProductDetail(product.id, product.name, product.description),
+            builder: (context) => ProductDetail(product.id, product.name, product.description),
           ),
         ),
         leading: Image.asset(
@@ -74,7 +140,7 @@ class _ProductsListView extends StatelessWidget {
           width: 100.0,
           height: 100.0,
         ),
-        trailing: _ShoppingBagIcon(product: product),
+        trailing: _ShoppingBagIcon(product: product, selectedProducts: selectedProducts),
         title: Text(product.name),
         subtitle: Text('${product.price}'),
         shape: RoundedRectangleBorder(
@@ -88,25 +154,29 @@ class _ProductsListView extends StatelessWidget {
 
 class _ShoppingBagIcon extends StatefulWidget {
   final Product product;
+  final List<Product> selectedProducts;
 
-  const _ShoppingBagIcon({required this.product});
+  const _ShoppingBagIcon({required this.product, required this.selectedProducts});
 
   @override
   _ShoppingBagIconState createState() => _ShoppingBagIconState();
 }
 
 class _ShoppingBagIconState extends State<_ShoppingBagIcon> {
-  bool _isSelected = false;
-
   @override
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(Icons.shopping_bag),
-      color: _isSelected ? Colors.green : null,
+      color: widget.product.isSelected ? Colors.green : null,
       onPressed: () {
         setState(() {
-          _isSelected = !_isSelected;
-          widget.product.isSelected = _isSelected;
+          widget.product.isSelected = !widget.product.isSelected;
+
+          if (widget.product.isSelected) {
+            widget.selectedProducts.add(widget.product);
+          } else {
+            widget.selectedProducts.remove(widget.product);
+          }
         });
       },
     );
