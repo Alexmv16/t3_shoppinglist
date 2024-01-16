@@ -149,7 +149,6 @@ class _QuantityButton extends StatelessWidget {
     required this.color,
     required this.onPressed,
   });
-
   @override
   Widget build(BuildContext context) {
     return IconButton(
